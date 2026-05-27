@@ -32,9 +32,9 @@
 |-------------------------------|------------------------|
 | ![Wiring](assets/wiring.png) | ![Module](assets/module.png) |
 
-| Dragon Byte Web Flasher | Complete Assembly |
+| Dragon Byte Web Flasher 
 |------------------------|------------------|
-| ![Flasher](assets/flasher.png) | ![Complete](assets/complete.png) |
+| ![Flasher](assets/flasher.png) | 
 
 > 📁 Add your own photos inside the `assets/` folder with the filenames above.
 
