@@ -28,7 +28,7 @@
 
 ## 📸 Hardware Photos
 
-| ESP32 + Dual NRF24L01+ Wiring | NRF24L01+ PA/LNA Module |
+| ESP32 + Dual NRF24L01+ Wiring | ESP32 PA/LNA Module |
 |-------------------------------|------------------------|
 | ![Wiring](assets/wiring.png) | ![Module](assets/module.png) |
 
