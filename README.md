@@ -36,8 +36,8 @@
 |------------------------|------------------|
 | ![Flasher](assets/flasher.png) | 
 
-> 📁 Add your own photos inside the `assets/` folder with the filenames above.
-
+>
+> 
 ---
 
 ## 📋 Table of Contents
