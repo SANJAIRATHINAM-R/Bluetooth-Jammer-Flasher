@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dragon Byte – BT Jammer Flasher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --fire-1: #ff4500;
+      --fire-2: #ff7700;
+      --fire-3: #ffaa00;
+      --bg-deep: #0a0704;
+      --bg-card: rgba(25, 10, 4, 0.90);
+      --border: rgba(255, 80, 0, 0.32);
+      --text: #f5dcc8;
+      --text-muted: rgba(245, 220, 200, 0.62);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2.6rem 3rem;
+      max-width: 92%;
+      width: 640px;
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 0 45px rgba(255,69,0,0.28),
+        0 0 90px rgba(255,69,0,0.10),
+        inset 0 0 60px rgba(255,30,0,0.04);
+      text-align: center;
+    }
+
+    /* corner brackets */
+    .card::before, .card::after {
+      content: '';
+      position: absolute;
+      width: 24px; height: 24px;
+      border-color: var(--fire-2);
+      border-style: solid;
+    }
+    .card::before { top: 14px; left: 14px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }
+    .card::after  { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
+
+    /* ── Header ── */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 0.25rem;
+    }
+
+    .dragon-icon {
+      width: 54px; height: 54px;
+      filter: drop-shadow(0 0 12px var(--fire-1));
+      animation: float 3.6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-7px); }
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, var(--fire-3) 0%, var(--fire-1) 55%, #c0390a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      line-height: 1.15;
+    }
+
+    .tagline {
+      font-size: 0.72rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--fire-2);
+      margin-bottom: 0.3rem;
+      opacity: 0.82;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--fire-1), transparent);
+      margin: 1.2rem 0 1.5rem;
+      opacity: 0.45;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 1.6rem;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Radio options ── */
+    .options { list-style: none; margin-bottom: 1.8rem; }
+    .options li { margin-bottom: 0.8rem; }
+    .options input[type="radio"] { display: none; }
+
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255,60,0,0.04);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .options label .hw-icon {
+      font-size: 1.1rem;
+      margin-top: 1px;
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .options label:hover {
+      border-color: var(--fire-2);
+      background: rgba(255,80,0,0.09);
+      color: var(--text);
+    }
+    .options label:hover .hw-icon { opacity: 1; }
+
+    .options li:has(input:checked) label {
+      border-color: var(--fire-2);
+      background: linear-gradient(135deg, rgba(255,90,0,0.20), rgba(255,40,0,0.09));
+      color: var(--fire-3);
+      box-shadow: 0 0 18px rgba(255,80,0,0.22);
+    }
+    .options li:has(input:checked) label .hw-icon { opacity: 1; }
+
+    .hw-name {
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .hw-pins {
+      font-size: 0.8rem;
+      opacity: 0.65;
+      font-weight: 400;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Flash button area ── */
+    .btn-row {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.4rem;
+    }
+
+    esp-web-install-button {
+      --esp-web-install-button-color: var(--fire-1);
+      --esp-web-install-button-text-color: #fff;
+      --esp-web-install-button-border-radius: 9px;
+      --esp-web-install-button-font-size: 1rem;
+      font-weight: bold;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    esp-web-install-button.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-height: 1.2rem;
+      transition: opacity 0.3s;
+    }
+    .hint.gone { opacity: 0; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 1.8rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid rgba(255,80,0,0.18);
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .brand-footer {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1rem;
+      background: linear-gradient(to right, var(--fire-3), var(--fire-1));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 0.55rem;
+    }
+    footer a {
+      color: var(--fire-2);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    footer a:hover {
+      color: var(--fire-3);
+      text-shadow: 0 0 8px var(--fire-1);
+    }
+    .domain {
+      display: inline-block;
+      margin-top: 0.8rem;
+      padding: 3px 14px;
+      border: 1px solid rgba(255,100,0,0.3);
+      border-radius: 20px;
+      font-size: 0.76rem;
+      letter-spacing: 2.5px;
+      color: var(--fire-3);
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="card">
+
+  <div class="logo-row">
+    <!-- Dragon SVG icon -->
+    <svg class="dragon-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffaa00"/>
+          <stop offset="60%" stop-color="#ff4500"/>
+          <stop offset="100%" stop-color="#c0200a"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="42" cy="48" rx="18" ry="13" fill="url(#dg)" opacity=".9"/>
+      <ellipse cx="34" cy="34" rx="8" ry="10" fill="url(#dg)"/>
+      <ellipse cx="26" cy="24" rx="12" ry="9" fill="url(#dg)"/>
+      <ellipse cx="16" cy="26" rx="7" ry="5" fill="#ff7700"/>
+      <circle cx="22" cy="20" r="3" fill="#fff200"/>
+      <circle cx="22" cy="20" r="1.5" fill="#1a0000"/>
+      <ellipse cx="12" cy="27" rx="4" ry="2.5" fill="#ff2200" opacity=".85"/>
+      <path d="M44 38 Q62 20 70 28 Q60 38 50 42Z" fill="url(#dg)" opacity=".72"/>
+      <path d="M44 42 Q65 46 68 56 Q55 52 46 50Z" fill="url(#dg)" opacity=".55"/>
+      <path d="M58 54 Q70 60 74 70 Q64 62 58 58Z" fill="url(#dg)" opacity=".75"/>
+      <polyline points="36,26 38,20 40,27 42,21 44,28" stroke="#ffcc00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <h1>Dragon Byte</h1>
+  </div>
+
+  <p class="tagline">Bluetooth Jammer — Web Flasher</p>
+
+  <div class="divider"></div>
+
+  <p class="subtitle">Select your hardware configuration to flash firmware</p>
+
+  <ul class="options">
+    <li>
+      <label>
+        <input type="radio" name="hw" value="Ble1" />
+        <span class="hw-icon">📡</span>
+        <span>
+          <span class="hw-name">Single NRF24L01 — VSPI</span>
+          <span class="hw-pins">SCK=18 · MISO=19 · MOSI=23 · CS=21 · CE=22</span>
+        </span>
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="hw" value="Ble2" />
+        <span class="hw-icon">📡</span>
+        <span>
+          <span class="hw-name">Dual NRF24L01 — VSPI + HSPI</span>
+          <span class="hw-pins">Both SPI buses active simultaneously</span>
+        </span>
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="hw" value="Ble3" />
+        <span class="hw-icon">📡</span>
+        <span>
+          <span class="hw-name">Single NRF24L01 — HSPI</span>
+          <span class="hw-pins">SCK=14 · MISO=12 · MOSI=13 · CS=15 · CE=16</span>
+        </span>
+      </label>
+    </li>
+  </ul>
+
+  <div class="btn-row">
+    <esp-web-install-button manifest="" class="hidden"></esp-web-install-button>
+  </div>
+
+  <p class="hint" id="hint">← Select a hardware option above to enable flashing</p>
+
+  <footer>
+    <span class="brand-footer">Dragon Byte</span>
+    Developed with 🔥 by <strong>Dragon Byte</strong><br/><br/>
+    Contact us to purchase a kit &nbsp;·&nbsp;
+    <a href="https://wa.me/+94740310879" target="_blank">WhatsApp Us</a>
+    <br/>
+    <span class="domain">dragonbyte.co.in</span>
+  </footer>
+</div>
+
+<script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
+
+<script>
+/* ── Radio → manifest ── */
+document.querySelectorAll('input[name="hw"]').forEach(r =>
+  r.addEventListener('change', () => {
+    const btn  = document.querySelector('esp-web-install-button');
+    const hint = document.getElementById('hint');
+    btn.manifest = `web/manifest_${r.value}.json`;
+    btn.classList.remove('hidden');
+    hint.classList.add('gone');
+  })
+);
+
+/* ── Dragon-fire ember canvas ── */
+const canvas = document.getElementById('bg');
+const ctx    = canvas.getContext('2d');
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); init(); });
+
+const COLORS = [
+  [255, 69,  0],
+  [255, 120, 0],
+  [255, 180, 0],
+  [200, 20,  0],
+  [255, 50,  10],
+];
+
+class Ember {
+  constructor() { this.reset(true); }
+  reset(initial = false) {
+    this.x     = Math.random() * canvas.width;
+    this.y     = initial ? Math.random() * canvas.height : canvas.height + 8;
+    this.r     = Math.random() * 2 + 0.6;
+    this.vx    = (Math.random() - 0.5) * 0.55;
+    this.vy    = -(Math.random() * 0.85 + 0.3);
+    this.life  = 1;
+    this.decay = Math.random() * 0.004 + 0.0018;
+    this.rgb   = COLORS[Math.floor(Math.random() * COLORS.length)];
+  }
+  update() {
+    this.x   += this.vx;
+    this.y   += this.vy;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset();
+  }
+  draw() {
+    const [r,g,b] = this.rgb;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${r},${g},${b},${this.life * 0.78})`;
+    ctx.fill();
+  }
+}
+
+let embers = [];
+function init() {
+  const n = Math.floor((canvas.width * canvas.height) / 5800);
+  embers = Array.from({ length: n }, () => new Ember());
+}
+init();
+
+const LINK_DIST2 = 9000;
+function connect() {
+  for (let a = 0; a < embers.length; a++) {
+    for (let b = a + 1; b < embers.length; b++) {
+      const dx = embers[a].x - embers[b].x;
+      const dy = embers[a].y - embers[b].y;
+      const d2 = dx*dx + dy*dy;
+      if (d2 < LINK_DIST2) {
+        const alpha = (1 - d2 / LINK_DIST2) * 0.16;
+        ctx.strokeStyle = `rgba(255,80,0,${alpha})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(embers[a].x, embers[a].y);
+        ctx.lineTo(embers[b].x, embers[b].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // vignette
+  const gr = ctx.createRadialGradient(
+    canvas.width/2, canvas.height/2, 0,
+    canvas.width/2, canvas.height/2, canvas.width * 0.72
+  );
+  gr.addColorStop(0, 'rgba(28,8,2,0.0)');
+  gr.addColorStop(1, 'rgba(5,1,0,0.52)');
+  ctx.fillStyle = gr;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  embers.forEach(e => { e.update(); e.draw(); });
+  connect();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
