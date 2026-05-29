@@ -225,8 +225,7 @@ git push origin feature/my-feature
 ---
 
 ## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
+Apache License — see [LICENSE](LICENSE) for details.
 
 ---
 
